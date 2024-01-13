@@ -1,4 +1,3 @@
-import * as RS from "@effect/rpc-http/Schema"
 import * as S from "@effect/schema/Schema"
 import { pipe } from "effect/Function"
 // @ts-ignore
@@ -16,12 +15,7 @@ const User = S.struct({
   name: S.string
 })
 
-export const schema = RS.make({
-  getUserIds: {
-    output: S.chunk(UserId)
-  },
-  getUser: {
-    input: UserId,
-    output: User
-  }
-})
+export class GetUserIds extends S.TaggedRequest<GetUserIds>()("GetUserIds", S.never, S.array(UserId), {}) {}
+export class GetUser extends S.TaggedRequest<GetUser>()("GetUser", S.never, User, {
+  id: UserId
+}) {}
