@@ -1,7 +1,7 @@
 import * as Http from "@effect/platform/HttpClient"
 import { Resolver } from "@effect/rpc"
 import { HttpResolver } from "@effect/rpc-http"
-import { Console, Effect } from "effect"
+import { Console, Effect, Stream } from "effect"
 import type { UserRouter } from "./router.js"
 import { GetUser, GetUserIds } from "./schema.js"
 
@@ -14,7 +14,8 @@ const client = HttpResolver.make<UserRouter>(
 
 // Use the client
 client(new GetUserIds()).pipe(
+  Stream.runCollect,
   Effect.flatMap(Effect.forEach((id) => client(new GetUser({ id })), { batching: true })),
-  Effect.tap((users) => Console.log(users)),
+  Effect.tap(Console.log),
   Effect.runFork
 )
