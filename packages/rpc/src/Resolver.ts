@@ -21,7 +21,7 @@ import * as Rpc from "./Rpc.js"
  * @category constructors
  */
 export const make = <HR, E>(
-  handler: (u: ReadonlyArray<unknown>) => Stream.Stream<HR, E, unknown>
+  handler: (u: ReadonlyArray<unknown>) => Stream.Stream<unknown, E, HR>
 ) =>
 <R extends Router.Router<any, any>>(): RequestResolver.RequestResolver<
   Rpc.Request<Router.Router.Request<R>>,

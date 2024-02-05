@@ -67,9 +67,9 @@ export interface RpcStream<R, Req extends Schema.TaggedRequest.Any> extends Rpc.
   readonly handler: (
     request: Req
   ) => Stream.Stream<
-    R,
+    Req extends Serializable.WithResult<infer _R, infer _IE, infer _E, infer _IA, infer A> ? A : never,
     Req extends Serializable.WithResult<infer _R, infer _IE, infer E, infer _IA, infer _A> ? E : never,
-    Req extends Serializable.WithResult<infer _R, infer _IE, infer _E, infer _IA, infer A> ? A : never
+    R
   >
 }
 
@@ -107,7 +107,7 @@ export declare namespace Rpc {
    * @category models
    */
   export type Result<A extends Schema.TaggedRequest.Any, R = never> = EffectRequest.Request.Success<A> extends
-    Stream.Stream<infer _R, infer E, infer A> ? Stream.Stream<R, E, A>
+    Stream.Stream<infer A, infer E, infer _R> ? Stream.Stream<A, E, R>
     : Effect.Effect<EffectRequest.Request.Success<A>, EffectRequest.Request.Error<A>, R>
 }
 
@@ -134,7 +134,7 @@ export const effect = <Req extends Schema.TaggedRequest.Any, SR, I, R>(
  */
 export interface StreamRequest<Tag extends string, R, IS, S, RR, IE, E, IA, A>
   extends
-    EffectRequest.Request<never, Stream.Stream<never, E, A>>,
+    EffectRequest.Request<never, Stream.Stream<A, E, never>>,
     Serializable.SerializableWithResult<R, IS, S, RR, IE, E, IA, A>
 {
   readonly _tag: Tag
@@ -206,9 +206,9 @@ export const stream = <Req extends StreamRequest.Any, I, SR, R>(
   handler: (
     request: Req
   ) => Stream.Stream<
-    R,
+    Req extends Serializable.WithResult<infer _R, infer _IE, infer _E, infer _IA, infer A> ? A : never,
     Req extends Serializable.WithResult<infer _R, infer _IE, infer E, infer _IA, infer _A> ? E : never,
-    Req extends Serializable.WithResult<infer _R, infer _IE, infer _E, infer _IA, infer A> ? A : never
+    R
   >
 ): Rpc<R, Req> => ({
   [TypeId]: TypeId,

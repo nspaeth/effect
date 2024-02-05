@@ -153,7 +153,7 @@ export const toHandler = <R extends Router<any, any>>(router: R) => {
   const getEncode = withRequestTag((req) => Schema.encode(Serializable.exitSchema(req)))
   const getEncodeChunk = withRequestTag((req) => Schema.encode(Schema.chunk(Serializable.exitSchema(req))))
 
-  return (u: unknown): Stream.Stream<Router.Context<R>, ParseError, Router.Response> =>
+  return (u: unknown): Stream.Stream<Router.Response, ParseError, Router.Context<R>> =>
     pipe(
       decode(u),
       Effect.zip(Queue.bounded<Router.Response | typeof EOF>(16)),
